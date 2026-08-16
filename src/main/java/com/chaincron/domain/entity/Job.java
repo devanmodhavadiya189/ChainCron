@@ -44,8 +44,7 @@ public class Job {
     private String userTimezone;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(name = "status", nullable = false, columnDefinition = "job_status")
+    @Column(name = "status", nullable = false, length = 50)
     @Builder.Default
     private JobStatus status = JobStatus.PENDING;
 

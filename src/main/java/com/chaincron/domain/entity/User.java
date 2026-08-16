@@ -27,6 +27,9 @@ public class User {
     @Column(name = "google_sub", nullable = false, unique = true, length = 255)
     private String googleSub;
 
+    @Column(name = "wallet_address", unique = true, length = 42)
+    private String walletAddress;
+
     @Column(name = "credit_balance_wei", nullable = false, precision = 38, scale = 0)
     @Builder.Default
     private BigDecimal creditBalanceWei = BigDecimal.ZERO;

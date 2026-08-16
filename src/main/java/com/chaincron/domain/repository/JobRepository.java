@@ -73,4 +73,31 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     java.util.Optional<Job> findSubmittedByTxHash(@Param("txHash") String txHash);
 
     boolean existsByUserIdAndStatus(Long userId, JobStatus status);
+
+    @Query("""
+            SELECT j FROM Job j
+            WHERE j.status = com.chaincron.domain.enums.JobStatus.SUBMITTED
+              AND j.txHash IS NOT NULL
+            """)
+    List<Job> findSubmittedJobsWithTxHash();
+
+    @Modifying
+    @Query("""
+            UPDATE Job j
+            SET j.status = com.chaincron.domain.enums.JobStatus.PENDING
+            WHERE j.id = :id
+              AND j.status = com.chaincron.domain.enums.JobStatus.EXECUTING
+              AND j.txHash IS NULL
+            """)
+    int resetExecutingToPending(@Param("id") Long id);
+
+    @Modifying
+    @Query("""
+            UPDATE Job j
+            SET j.status = com.chaincron.domain.enums.JobStatus.SUBMITTED
+            WHERE j.id = :id
+              AND j.status = com.chaincron.domain.enums.JobStatus.EXECUTING
+              AND j.txHash IS NOT NULL
+            """)
+    int markExecutingAsSubmitted(@Param("id") Long id);
 }
